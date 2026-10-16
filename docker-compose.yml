@@ -26,6 +26,7 @@ services:
 
   backend:
     build: ./backend
+    image: backendimage
     container_name: ticket-backend
 
     environment:
@@ -47,6 +48,7 @@ services:
 
   frontend:
     build: ./frontend
+    image: frontendimage
     container_name: ticket-frontend
 
     ports:
