@@ -1,4 +1,4 @@
-pipepline {
+pipeline {
     agent any
     environment{
         DOCKERHUB_USER = 'nehaprem'
