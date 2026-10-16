@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT Support Ticket System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>IT Support Ticket System</h1>
+
+        <section class="card">
+            <h2>Create New Ticket</h2>
+
+            <form id="ticketForm">
+
+                <label>Issue Title</label>
+                <input
+                    type="text"
+                    id="title"
+                    placeholder="e.g. Linux server is unreachable"
+                    required
+                >
+
+                <label>Description</label>
+                <textarea
+                    id="description"
+                    placeholder="Describe the issue"
+                    required
+                ></textarea>
+
+                <label>Priority</label>
+                <select id="priority">
+                    <option value="LOW">Low</option>
+                    <option value="MEDIUM" selected>Medium</option>
+                    <option value="HIGH">High</option>
+                </select>
+
+                <label>Category</label>
+                <select id="category">
+                    <option value="Linux">Linux</option>
+                    <option value="Network">Network</option>
+                    <option value="Hardware">Hardware</option>
+                    <option value="Software">Software</option>
+                    <option value="Other">Other</option>
+                </select>
+
+                <button type="submit">Create Ticket</button>
+
+            </form>
+
+            <p id="message"></p>
+        </section>
+
+
+        <section class="card">
+            <div class="ticket-header">
+                <h2>Support Tickets</h2>
+                <button onclick="loadTickets()">Refresh</button>
+            </div>
+
+            <div id="tickets">
+                Loading tickets...
+            </div>
+        </section>
+
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>

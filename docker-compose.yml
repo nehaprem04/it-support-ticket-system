@@ -1,0 +1,65 @@
+services:
+  mysql:
+    image: mysql:8.0                       #using a built-in image from docker hub
+    container_name: ticket-mysql
+
+    environment:                           #creating mysql database and configuring
+      MYSQL_ROOT_PASSWORD: rootpassword    
+      MYSQL_DATABASE: ticketsdb
+      MYSQL_USER: ticketuser
+      MYSQL_PASSWORD: ticketpassword
+
+#ports:- "3307:3306" >>> No host port needed; backend connects to MySQL internally via port 3306.
+# Earlier, when the backend ran on Windows and not in docker, it accessed MySQL through host port 3307.
+
+    healthcheck:
+      test: ["CMD", "mysqladmin" , "ping" , "-h" , "localhost"]  #hey mysql are you running on this same container? 
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+    volumes:
+      - ticket-data:/var/lib/mysql
+    
+    networks:
+      - ticket-network
+
+  backend:
+    build: ./backend
+    container_name: ticket-backend
+
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: ticketuser
+      DB_PASSWORD: ticketpassword
+      DB_NAME: ticketsdb
+    
+    ports:
+      - "5000:5000"  #since browser is on windows and backend in docker we need ports defined here
+
+    depends_on:
+      mysql:
+        condition: service_healthy     #Built-in Compose condition to wait for the service to become healthy.
+
+    networks:
+      - ticket-network
+
+  frontend:
+    build: ./frontend
+    container_name: ticket-frontend
+
+    ports:
+      - "8081:80"
+
+    depends_on:
+      - backend
+
+    networks:
+      - ticket-network
+
+volumes:
+  ticket-data:
+
+networks:
+  ticket-network:
