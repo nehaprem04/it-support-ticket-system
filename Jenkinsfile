@@ -53,7 +53,7 @@ pipeline {
                     )
                 ]){
                     bat """
-                            ssh -i "%SSH_KEY%" %SSH_USER%@40.81.233.233 "cd ~/ticket-app && docker compose pull && IMAGE_TAG=%BUILD_NUMBER% docker compose up -d"
+                            ssh -o StrictHostKeyChecking=no -i "%SSH_KEY%" %SSH_USER%@40.81.233.233 "cd ~/ticket-app && export IMAGE_TAG=%BUILD_NUMBER% && docker compose pull && docker compose up -d"
                     """
                 }
             }
