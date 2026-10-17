@@ -53,8 +53,11 @@ pipeline {
                     )
                 ]){
                     bat """
+                            icacls "%SSH_KEY%" /inheritance:r
+                            icacls "%SSH_KEY%" /grant:r "SYSTEM:F"
+
                             ssh -o StrictHostKeyChecking=no -i "%SSH_KEY%" %SSH_USER%@40.81.233.233 "cd ~/ticket-app && export IMAGE_TAG=%BUILD_NUMBER% && docker compose pull && docker compose up -d"
-                    """
+                        """
                 }
             }
         }
