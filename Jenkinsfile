@@ -42,5 +42,22 @@ pipeline {
                     }
             }
         }
+
+        stage("Deploy to Azure") {
+            steps{
+                withCredentials([
+                    sshUserPrivateKey(
+                        credentialsId: 'azure-vm-ssh',
+                        keyFileVariable: 'SSH_KEY',
+                        usernameVariable: 'SSH_USER'
+                    )
+                ]){
+                    bat """
+                            ssh -i "%SSH_KEY%" %SSH_USER%@40.81.233.233 
+                            "cd ~/ticket-app && docker compose pull && IMAGE_TAG=%BUILD_NUMBER% docker compose up -d"
+                    """
+                }
+            }
+        }
     }
 }
