@@ -21,6 +21,7 @@ def create_table():
     connection = get_db_connection()
     cursor = connection.cursor()
 
+    # Create the tickets table if it doesn't already exist
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS tickets (
             id INT AUTO_INCREMENT PRIMARY KEY,
@@ -33,14 +34,42 @@ def create_table():
     """)
 
     connection.commit()
+
+    # Add resolution column if it doesn't already exist
+    cursor.execute("""
+        SELECT COUNT(*)
+        FROM INFORMATION_SCHEMA.COLUMNS
+        WHERE TABLE_SCHEMA = DATABASE()
+        AND TABLE_NAME = 'tickets'
+        AND COLUMN_NAME = 'resolution'
+    """)
+
+    column_exists = cursor.fetchone()[0]
+
+    if column_exists == 0:
+        cursor.execute("""
+            ALTER TABLE tickets
+            ADD COLUMN resolution TEXT
+        """)
+
+        connection.commit()
+
     cursor.close()
     connection.close()
 
+
+# ==========================================
+# HOME
+# ==========================================
 
 @app.route("/")
 def home():
     return "IT Support Ticket System Backend is running!"
 
+
+# ==========================================
+# CREATE TICKET
+# ==========================================
 
 @app.route("/tickets", methods=["POST"])
 def create_ticket():
@@ -82,6 +111,10 @@ def create_ticket():
     }), 201
 
 
+# ==========================================
+# GET ALL TICKETS
+# ==========================================
+
 @app.route("/tickets", methods=["GET"])
 def get_tickets():
 
@@ -95,6 +128,11 @@ def get_tickets():
     connection.close()
 
     return jsonify(tickets)
+
+
+# ==========================================
+# UPDATE TICKET
+# ==========================================
 
 @app.route("/tickets/<int:ticket_id>", methods=["PUT"])
 def update_ticket(ticket_id):
@@ -138,6 +176,11 @@ def update_ticket(ticket_id):
         "status": new_status,
         "resolution": resolution
     })
+
+
+# ==========================================
+# START APPLICATION
+# ==========================================
 
 if __name__ == "__main__":
     create_table()
